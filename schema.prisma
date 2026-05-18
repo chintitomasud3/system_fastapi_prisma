@@ -1,0 +1,38 @@
+generator client {
+  provider             = "prisma-client-py"
+  interface            = "asyncio"
+  recursive_type_depth = 5
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  name      String
+  age       Int
+  city      String
+  email     String?
+  seriously String?
+  password  String
+  role      String    @default("USER")
+  posts     Post[]
+}
+
+model Post {
+  id        Int       @id @default(autoincrement())
+  title     String
+  content   String
+  authorId  Int
+  author    User      @relation(fields: [authorId], references: [id])
+  comments  Comment[]
+}
+
+model Comment {
+  id        Int    @id @default(autoincrement())
+  text      String
+  postId    Int
+  post      Post   @relation(fields: [postId], references: [id])
+}
